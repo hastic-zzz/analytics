@@ -1,3 +1,5 @@
+# see https://github.com/hastic/hastic-server/wiki/Custom-model
+
 from models import Model, AnalyticSegment, ModelState, ModelType
 from analytic_types import AnalyticUnitId, ModelCache
 from analytic_types.learning_info import LearningInfo
