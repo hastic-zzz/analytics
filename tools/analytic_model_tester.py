@@ -3,24 +3,30 @@ ANALYTICS_PATH = '../analytics'
 TESTS_PATH = '../tests'
 sys.path.extend([ANALYTICS_PATH, TESTS_PATH])
 
-import pandas as pd
-import numpy as np
 import asyncio
 from typing import List, Tuple
 
-import utils
-from analytic_types.segment import Segment
 from analytic_unit_manager import AnalyticUnitManager
 
 START_TIMESTAMP = 1523889000000
 # TODO: get_dataset
 # TODO: get_segment
-PEAK_DATA_MODELS = []
+
 # dataset with 3 peaks
 TEST_DATA = [0, 0, 3, 5, 7, 5, 3, 0, 0, 1, 0, 1, 4, 6, 8, 6, 4, 1, 0, 0, 0, 1, 0, 3, 5, 7, 5, 3, 0, 1, 1]
 # TODO: more convenient way to specify labeled segments
 POSITIVE_SEGMENTS = [{ 'from': 1, 'to': 7 }, { 'from': 22, 'to': 28 }]
 NEGATIVE_SEGMENTS = [{ 'from': 11, 'to': 17 }]
+DATA_MODELS = [
+    {
+        'type': 'peak',
+        'serie': TEST_DATA,
+        'segments': {
+            'positive': POSITIVE_SEGMENTS,
+            'negative': NEGATIVE_SEGMENTS
+        }
+    }
+]
 
 class TesterSegment():
 
@@ -64,18 +70,19 @@ class Metric():
 
 class TestDataModel():
 
-    def __init__(self, data_values: List[float], positive_segments, negative_segments, model_type: str):
+    def __init__(self, data_values: List[float], positive_segments: List[dict], negative_segments: List[dict], model_type: str):
         self.data_values = data_values
         self.positive_segments = positive_segments
         self.negative_segments = negative_segments
         self.model_type = model_type
 
-    def get_segments_for_detection(self, positive_amount, negative_amount):
+    def get_segments_for_detection(self, positive_amount: int, negative_amount: int):
         positive_segments = [segment for idx, segment in enumerate(self.get_positive_segments()) if idx < positive_amount]
         negative_segments = [segment for idx, segment in enumerate(self.get_negative_segments()) if idx < negative_amount]
         return positive_segments + negative_segments
 
-    def get_formated_segments(self, segments, positive: bool):
+    def get_formated_segments(self, segments: List[dict], positive: bool):
+        # TODO: add enum
         return [TesterSegment(segment['from'], segment['to'], positive).get_segment() for segment in segments]
 
     def get_positive_segments(self):
@@ -111,8 +118,14 @@ class TestDataModel():
             task['payload']['segments'] = segments
         return task
 
-PEAK_DATA_MODEL = TestDataModel(TEST_DATA, POSITIVE_SEGMENTS, NEGATIVE_SEGMENTS, 'peak')
-PEAK_DATA_MODELS.append(PEAK_DATA_MODEL)
+PEAK_DATA_MODELS = list(map(
+    lambda data_model: TestDataModel(
+        data_model['serie'],
+        data_model['segments']['positive'],
+        data_model['segments']['negative'],
+        data_model['type']
+    )
+))
 
 async def main(model_type: str) -> None:
     table_metric = []
