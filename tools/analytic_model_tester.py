@@ -124,7 +124,8 @@ PEAK_DATA_MODELS = list(map(
         data_model['segments']['positive'],
         data_model['segments']['negative'],
         data_model['type']
-    )
+    ),
+    DATA_MODELS
 ))
 
 async def main(model_type: str) -> None:
