@@ -35,6 +35,7 @@ HASTIC_SERVER_URL = get_config_field('HASTIC_SERVER_URL', 'ws://localhost:8002')
 LOGGING_LEVEL = get_config_field(
     'HS_AL_LOGGING_LEVEL', 
     'INFO', 
+    # TODO: make values case insensitive
     ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
 )
 LEARNING_TIMEOUT = get_config_field('LEARNING_TIMEOUT', 120)
