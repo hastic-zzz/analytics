@@ -11,20 +11,30 @@ if config_exists:
     with open(CONFIG_FILE) as f:
         config = json.load(f)
 else:
-    print('Config file %s doesn`t exist, using defaults' % CONFIG_FILE)
+    print('Config file %s doesn`t exist, using environment variables / defaults' % CONFIG_FILE)
 
 
-def get_config_field(field: str, default_val = None):
+def get_config_field(field: str, default_val = None, allowed_values = []):
+    value = None
     if field in os.environ:
-        return os.environ[field]
+        value = os.environ[field]
+    elif config_exists and field in config and config[field] != '':
+        value = config[field]
+    elif default_val is not None:
+        value = default_val
 
-    if config_exists and field in config and config[field] != '':
-        return config[field]
+    if len(allowed_values) > 0 and value not in allowed_values:
+        raise Exception('{} value must be one of: {}, got: {}'.format(field, allowed_values, value))
 
-    if default_val is not None:
-        return default_val
+    if value == None:
+        raise Exception('Please configure {}'.format(field))
 
-    raise Exception('Please configure {}'.format(field))
+    return value
 
 HASTIC_SERVER_URL = get_config_field('HASTIC_SERVER_URL', 'ws://localhost:8002')
+LOGGING_LEVEL = get_config_field(
+    'HS_AL_LOGGING_LEVEL', 
+    'INFO', 
+    ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+)
 LEARNING_TIMEOUT = get_config_field('LEARNING_TIMEOUT', 120)
