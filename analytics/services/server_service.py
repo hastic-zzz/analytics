@@ -111,7 +111,7 @@ class ServerService(utils.concurrent.AsyncZmqActor):
                 self.__server_socket = None
                 # TODO: move to config
                 reconnect_delay = 3
-                print('connection is refused or lost, trying to reconnect in %s seconds' % reconnect_delay)
+                logger.info('connection is refused or lost, trying to reconnect in %s seconds' % reconnect_delay)
                 await asyncio.sleep(reconnect_delay)
         raise InterruptedError()
 

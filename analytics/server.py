@@ -18,6 +18,7 @@ server_service: services.ServerService = None
 data_service: services.DataService = None
 analytic_unit_manager: AnalyticUnitManager = None
 
+logging.root.setLevel(config.LOGGING_LEVEL)
 logger = logging.getLogger('SERVER')
 
 
@@ -85,10 +86,9 @@ async def app_loop():
 
 def run_server():
     loop = asyncio.get_event_loop()
-    #loop.set_debug(True)
+
     logger.info("Ok")
     init_services()
-    print('Analytics process is running') # we need to print to stdout and flush
-    sys.stdout.flush()                    # because node.js expects it
+    logger.info('Analytics process is running')
 
     loop.run_until_complete(app_loop())
