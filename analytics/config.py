@@ -26,7 +26,7 @@ def get_config_field(field: str, default_val = None, allowed_values = []):
     if len(allowed_values) > 0 and value not in allowed_values:
         raise Exception('{} value must be one of: {}, got: {}'.format(field, allowed_values, value))
 
-    if value == None:
+    if value is None:
         raise Exception('Please configure {}'.format(field))
 
     return value
