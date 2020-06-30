@@ -2,8 +2,10 @@
 
 Python service which gets tasks from [hastic-server-node](https://github.com/hastic/hastic-server/tree/master/server) like
 
-* trains statistical models
+* train statistical models
 * detect patterns in time series data
+
+See more 
 
 ## Arhitecture
 
