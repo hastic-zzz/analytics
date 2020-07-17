@@ -140,9 +140,9 @@ class AsyncZmqActor(AsyncZmqThread):
     ```
     """
 
-    def __init__(self, run_until_complete: bool = True):
+    def __init__(self, run_until_run_thread_complete: bool = True):
         super(AsyncZmqActor, self).__init__(
-            run_until_complete, zmq.asyncio.Context(), ZMQ_THREAD_ACTOR_ADDR
+            run_until_run_thread_complete, zmq.asyncio.Context(), ZMQ_THREAD_ACTOR_ADDR
         )
 
         self.__actor_socket = self._zmq_context.socket(zmq.PAIR)
