@@ -20,7 +20,7 @@ class AsyncZmqThread(threading.Thread, ABC):
     """
 
     def __init__(self,
-        run_until_complete: bool,
+        run_until_run_thread_complete: bool,
         zmq_context: zmq.asyncio.Context,
         zmq_socket_addr: str,
         zmq_socket_type = zmq.PAIR
@@ -28,13 +28,13 @@ class AsyncZmqThread(threading.Thread, ABC):
         """
         Parameters
         ----------
-        run_until_complete : bool
+        run_until_run_thread_complete : bool
             stop the thread when _run_thread completes. Set it to False
             to be abel to run _on_message_to_thread() and make work there after
              _run_thread completed
         """
         super(AsyncZmqThread, self).__init__()
-        self.run_until_complete = run_until_complete
+        self.run_until_run_thread_complete = run_until_run_thread_complete
         self._zmq_context = zmq_context # you can use it in child classes
         self.__zmq_socket_addr = zmq_socket_addr
         self.__zmq_socket_type = zmq_socket_type
@@ -80,7 +80,7 @@ class AsyncZmqThread(threading.Thread, ABC):
         self.__zmq_socket = self._zmq_context.socket(self.__zmq_socket_type)
         self.__zmq_socket.connect(self.__zmq_socket_addr)
         asyncio.ensure_future(self.__message_recv_loop())
-        if self.run_until_complete:
+        if self.run_until_run_thread_complete:
             self.__asyncio_loop.run_until_complete(self._run_thread())
         else:
             asyncio.ensure_future(self._run_thread())
