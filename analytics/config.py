@@ -1,6 +1,8 @@
 import os
 import json
+from dotenv import load_dotenv
 
+load_dotenv()
 
 PARENT_FOLDER = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 CONFIG_FILE = os.path.join(PARENT_FOLDER, 'config.json')
