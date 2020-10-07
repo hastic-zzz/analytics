@@ -5,3 +5,4 @@ pandas==0.20.3
 pyzmq==18.0.1
 scipy==1.1.0
 websockets==8.1
+python-dotenv==0.14.0
