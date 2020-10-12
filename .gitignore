@@ -7,6 +7,7 @@ test/
 
 # venv
 bin
+!bin/server
 lib
 lib64
 share
