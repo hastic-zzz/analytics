@@ -4,3 +4,11 @@ dist/
 __pycache__/
 test/
 .env
+
+# venv
+bin
+!bin/server
+lib
+lib64
+share
+pyvenv.cfg
