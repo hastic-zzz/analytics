@@ -105,9 +105,12 @@ class AnomalyDetector(ProcessingDetector):
         if len(data_without_nan) == 0:
             return None
 
-        self.bucket.receive_data(data_without_nan)
+        window_size = self.get_window_size(cache)
 
-        if len(self.bucket.data) >= self.get_window_size(cache):
+        self.bucket.set_max_size(2 * window_size)
+        self.bucket.append_data(data_without_nan)
+
+        if self.bucket.get_current_size() >= window_size:
             return self.detect(self.bucket.data, cache)
 
         return None
