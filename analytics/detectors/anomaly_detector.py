@@ -267,7 +267,7 @@ class AnomalyDetector(ProcessingDetector):
                 yield Segment(
                     utils.convert_pd_timestamp_to_ms(segment_start),
                     utils.convert_pd_timestamp_to_ms(segment_end),
-                    message=f'{val} out of {str(bound.value)} bound'
+                    message=f'{val:.2f} out of {str(bound.value)} bound'
                 )
                 in_segment = False
         else:
@@ -276,5 +276,5 @@ class AnomalyDetector(ProcessingDetector):
                 return Segment(
                     utils.convert_pd_timestamp_to_ms(segment_start),
                     utils.convert_pd_timestamp_to_ms(segment_end),
-                    message=f'{val} out of {str(bound.value)} bound'
+                    message=f'{val:.2f} out of {str(bound.value)} bound'
                 )
