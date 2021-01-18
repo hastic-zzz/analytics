@@ -17,6 +17,9 @@ import utils
 MAX_DEPENDENCY_LEVEL = 100
 MIN_DEPENDENCY_FACTOR = 0.1
 BASIC_ALPHA = 0.5
+
+BUCKET_SIZE = MAX_DEPENDENCY_LEVEL
+
 logger = logging.getLogger('ANOMALY_DETECTOR')
 
 
@@ -107,7 +110,7 @@ class AnomalyDetector(ProcessingDetector):
 
         window_size = self.get_window_size(cache)
 
-        self.bucket.set_max_size(2 * window_size)
+        self.bucket.set_max_size(BUCKET_SIZE)
         self.bucket.append_data(data_without_nan)
 
         if self.bucket.get_current_size() >= window_size:
@@ -267,6 +270,7 @@ class AnomalyDetector(ProcessingDetector):
                 yield Segment(
                     utils.convert_pd_timestamp_to_ms(segment_start),
                     utils.convert_pd_timestamp_to_ms(segment_end),
+                    # TODO: configurable decimals number
                     message=f'{val:.2f} out of {str(bound.value)} bound'
                 )
                 in_segment = False
