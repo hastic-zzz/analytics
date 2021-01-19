@@ -110,23 +110,20 @@ class PatternDetector(Detector):
         if len(data_without_nan) == 0:
             return None
 
-        self.bucket.receive_data(data_without_nan)
-
         # TODO: use ModelState
         window_size = cache['windowSize']
+        bucket_max_size = max(window_size * self.BUCKET_WINDOW_SIZE_FACTOR, self.MIN_BUCKET_SIZE)
 
-        bucket_len = len(self.bucket.data)
-        if bucket_len < window_size * 2:
-            msg = f'{self.analytic_unit_id} bucket data {bucket_len} less than two window size {window_size * 2}, skip run detection from consume_data'
+        self.bucket.set_max_size(bucket_max_size)
+        self.bucket.append_data(data_without_nan)
+
+        bucket_size = self.bucket.get_current_size()
+        if bucket_size < window_size * 2:
+            msg = f'{self.analytic_unit_id} bucket data {bucket_size} less than two window size {window_size * 2}, skip run detection from consume_data'
             logger.debug(msg)
             return None
 
-        res = self.detect(self.bucket.data, cache)
-
-        bucket_size = max(window_size * self.BUCKET_WINDOW_SIZE_FACTOR, self.MIN_BUCKET_SIZE)
-        if bucket_len > bucket_size:
-            excess_data = bucket_len - bucket_size
-            self.bucket.drop_data(excess_data)
+        res = self.detect(self.bucket.data, cache)        
 
         logging.debug('End consume_data for analytic unit: {} with res: {}'.format(self.analytic_unit_id, str(res.to_json())))
 

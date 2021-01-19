@@ -13,17 +13,17 @@ class TestBucket(unittest.TestCase):
         data_val = list(range(6))
         timestamp_list = create_list_of_timestamps(len(data_val))
         for val in data_val:
-            bucket.receive_data(get_pd_dataframe([val], [1523889000000 + val]))
+            bucket.append_data(get_pd_dataframe([val], [1523889000000 + val]))
         for idx, row in bucket.data.iterrows():
             self.assertEqual(data_val[idx], row['value'])
             self.assertEqual(timestamp_list[idx], row['timestamp'])
 
-    def test_drop_data(self):
+    def test_max_size(self):
         bucket = DataBucket()
         data_val = list(range(10))
         timestamp_list = create_list_of_timestamps(len(data_val))
-        bucket.receive_data(get_pd_dataframe(data_val, timestamp_list))
-        bucket.drop_data(5)
+        bucket.set_max_size(5)
+        bucket.append_data(get_pd_dataframe(data_val, timestamp_list))
         expected_data = data_val[5:]
         expected_timestamp = timestamp_list[5:]
         self.assertEqual(expected_data, bucket.data['value'].tolist())
